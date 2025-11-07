@@ -33,6 +33,9 @@ MoonOps/
 - ✅ Health check endpoint
 - ✅ Extensible repository pattern
 - ✅ Ready for integration with central repository for integrators and shared code
+- ✅ Comprehensive documentation with XML summaries and regions
+- ✅ Models-based data transfer (not DTOs)
+- ✅ All components follow consistent documentation standards
 
 ## Getting Started
 
@@ -78,15 +81,40 @@ dotnet test
 
 ### Domain Layer (`MoonOps.Domain`)
 Contains business entities, value objects, and domain interfaces. This layer has no dependencies on other layers.
+- All entities inherit from `BaseEntity` with audit fields
+- Interfaces define contracts for repositories
+- Example: `Integrator` entity demonstrates domain modeling
 
 ### Application Layer (`MoonOps.Application`)
 Orchestrates business logic and coordinates between the domain and infrastructure layers. Contains Models and application services.
+- Models (not DTOs) for data transfer between layers
+- Application services implement business logic orchestration
+- Example: `IntegratorService` demonstrates service implementation
 
 ### Infrastructure Layer (`MoonOps.Infrastructure`)
 Implements interfaces defined in the domain layer. Handles data persistence, external services, and other infrastructure concerns.
+- Base repository implementation ready for database integration
+- Prepared for Entity Framework Core, Dapper, or other ORMs
 
 ### API Layer (`MoonOps.Api`)
 Exposes HTTP endpoints using minimal APIs. Configures middleware, dependency injection, and hosts the application.
+- Minimal API approach for clean, focused endpoints
+- Scalar UI integration for interactive API documentation
+- OpenAPI specification automatically generated
+
+## Code Documentation Standards
+
+All components in this project follow strict documentation standards:
+
+- **XML Summaries**: Every class, method, property, and parameter has detailed XML documentation
+- **Regions**: Code is organized using `#region`/`#endregion` for better navigation
+  - `#region Namespace Imports` - All using statements
+  - `#region Fields` - Private fields
+  - `#region Properties` - Public properties
+  - `#region Constructors` - Constructor methods
+  - `#region Public Methods` - Public methods
+  - `#region Private Methods` - Private/helper methods
+- **Consistent Structure**: All files follow the same organizational pattern
 
 ## Scalability Considerations
 
