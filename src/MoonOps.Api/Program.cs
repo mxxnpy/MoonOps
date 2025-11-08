@@ -1,62 +1,27 @@
-#region Namespace Imports
-using Scalar.AspNetCore;
-#endregion
-
-#region Application Configuration
+using MoonOps.Api.Configuration;
+using MoonOps.Api.Controllers;
+using MoonOps.Application.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#region Service Registration
+builder.Services.AddControllers(options => 
+    options.Conventions.Add(new ControllerRouteConvention()));
 
-/// <summary>
-/// Registers OpenAPI services for API documentation generation.
-/// </summary>
-builder.Services.AddOpenApi();
+builder.Services.AddApplicationServices()
+    .AddHttpContextAccessor();
 
-#endregion
+OpenApiConfiguration.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
-#region Middleware Pipeline Configuration
+app.UseRouting();
+app.UseAuthorization();
+app.MapControllers();
 
-/// <summary>
-/// Maps the OpenAPI endpoint for serving the API specification.
-/// </summary>
-app.MapOpenApi();
-
-/// <summary>
-/// Configures Scalar UI for interactive API documentation in development mode.
-/// Accessible at /scalar/v1 when running in development environment.
-/// </summary>
-if (app.Environment.IsDevelopment())
-{
-    app.MapScalarApiReference();
-}
-
-#endregion
-
-#region Endpoint Mapping
-
-/// <summary>
-/// Health check endpoint to verify API availability.
-/// Returns the current health status and timestamp.
-/// </summary>
-app.MapGet("/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }))
-    .WithName("HealthCheck")
-    .WithOpenApi();
-
-#endregion
+OpenApiConfiguration.Configure(app);
+ScalarConfiguration.Configure(app);
 
 app.Run();
 
-#endregion
-
-#region Program Class
-
-/// <summary>
-/// Make the implicit Program class accessible to tests.
-/// Required for integration testing with WebApplicationFactory.
-/// </summary>
 public partial class Program { }
 
-#endregion

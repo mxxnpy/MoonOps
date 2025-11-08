@@ -7,13 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="9.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.10" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.10.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MoonOps.Application\MoonOps.Application.csproj" />
     <ProjectReference Include="..\MoonOps.Infrastructure\MoonOps.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\V1\Mottu\" />
+    <Folder Include="Controllers\V1\System\" />
+    <Folder Include="Controllers\V2\" />
   </ItemGroup>
 
 </Project>

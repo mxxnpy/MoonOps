@@ -1,141 +1,237 @@
 # MoonOps
 
-MoonOps is a scalable ASP.NET Core application built with Domain-Driven Design (DDD) principles, featuring OpenAPI documentation with Scalar UI.
+MoonOps é uma aplicação ASP.NET Core escalável construída com princípios de Domain-Driven Design (DDD), apresentando documentação OpenAPI com Scalar UI.
 
-## Project Structure
+**Autor:** mxxnpy | **Email:** contato@moonops.dev | **Repositório:** https://github.com/mxxnpy/MoonOps
 
-The solution follows a clean DDD architecture with clear separation of concerns:
+## Estrutura do Projeto
+
+A solução segue uma arquitetura DDD limpa com clara separação de responsabilidades:
 
 ```
 MoonOps/
 ├── src/
-│   ├── MoonOps.Api/               # API layer - HTTP endpoints and middleware
-│   ├── MoonOps.Application/       # Application layer - business logic orchestration
-│   │   ├── Models/                # Data models for data transfer between layers
-│   │   ├── Interfaces/            # Application service interfaces
-│   │   └── Services/              # Application services
-│   ├── MoonOps.Domain/            # Domain layer - business entities and rules
-│   │   ├── Entities/              # Domain entities
-│   │   ├── Interfaces/            # Repository interfaces
-│   │   └── ValueObjects/          # Value objects
-│   └── MoonOps.Infrastructure/    # Infrastructure layer - external concerns
-│       ├── Data/                  # Database context and configurations
-│       └── Repositories/          # Repository implementations
+│   ├── MoonOps.Api/     # Camada API - endpoints HTTP e middleware
+│   │   ├── Controllers/# Controllers organizados hierarquicamente
+│   │   │   ├── V1/      # Controllers da versão 1
+│   │   │   │   ├── HealthController.cs
+│   │   │   │   ├── IntegratorsController.cs
+│   │   │ │   └── VersionController.cs    # Discovery da V1
+│   │ │   ├── V2/       # Controllers da versão 2
+│   │   │   │   └── VersionController.cs# Discovery da V2
+│   │   │   └── VersionedControllerBase.cs  # Base para versionamento
+│   │   ├── Configuration/    # Configurações da API (OpenAPI, Scalar)
+│   │   └── Program.cs        # Ponto de entrada da aplicação
+│   ├── MoonOps.Application/       # Camada de Aplicação - orquestração da lógica de negócio
+│   │   ├── Configuration/         # Configuração de DI
+│   │   ├── Repositories/      # Repositórios temporários em memória
+│   │   ├── Services/   # Serviços de aplicação e integrações
+│   │   │   ├── IntegratorService.cs
+│   │   │   └── MottuServices/     # Serviços específicos Mottu
+│   │   │       └── KeyCloak/      # Autenticação KeyCloak
+│   │   └── Handlers/     # Handlers HTTP e middleware customizado
+│   ├── MoonOps.Domain/            # Camada de Domínio - entidades e regras de negócio
+│   │   ├── Entities/     # Entidades do domínio
+│   │   ├── Models/          # Modelos para transferência de dados
+│   │   ├── Interfaces/    # Interfaces de repositório e serviços
+│   │   └── ValueObjects/     # Objetos de valor
+│   └── MoonOps.Infrastructure/    # Camada de Infraestrutura - persistência e serviços externos
+│       ├── Data/       # Contexto de banco e configurações
+│       └── Repositories/          # Implementações de repositório
 └── tests/
-    └── MoonOps.Tests/             # Unit and integration tests
+    └── MoonOps.Tests/             # Testes unitários e de integração
 ```
 
-## Features
+## Organização da Documentação API
 
-- ✅ Domain-Driven Design (DDD) architecture
-- ✅ Clean Architecture with dependency inversion
-- ✅ OpenAPI/Swagger documentation with Scalar UI
-- ✅ Health check endpoint
-- ✅ Extensible repository pattern
-- ✅ Ready for integration with central repository for integrators and shared code
-- ✅ Comprehensive documentation with XML summaries and regions
-- ✅ Models-based data transfer (not DTOs)
-- ✅ All components follow consistent documentation standards
+O Scalar UI está configurado com organização hierárquica em `/docs`:
 
-## Getting Started
+```
+docs/
+├── v1/        # Grupo principal versão 1
+│   ├── health        # Endpoints de saúde
+│   │   ├── GET /api/v1/health     # Status básico
+│   │   └── GET /api/v1/health/detailed     # Status detalhado
+│   ├── integrators/         # Endpoints de integradores
+│   │   ├── GET    /api/v1/integrators
+│   │   ├── GET    /api/v1/integrators/{id}
+│   │   ├── POST   /api/v1/integrators
+│   │   ├── PUT    /api/v1/integrators/{id}
+│   │   └── DELETE /api/v1/integrators/{id}
+│   └── version/      # Discovery e informações da versão
+│       ├── GET /api/v1/version              # Info completa da V1
+│       └── GET /api/v1/version/controllers  # Lista controllers V1
+└── v2/       # Grupo principal versão 2 (exemplo)
+    └── version/       # Discovery da V2
+        └── GET /api/v2/version       # Info da V2
+```
 
-### Prerequisites
+## Funcionalidades
 
-- .NET 9.0 SDK or later
+- ✅ Arquitetura Domain-Driven Design (DDD)
+- ✅ Clean Architecture com inversão de dependência
+- ✅ Documentação OpenAPI/Swagger com Scalar UI organizada hierarquicamente
+- ✅ Versionamento automático de controllers
+- ✅ Controllers de discovery de versão (lista endpoints automaticamente)
+- ✅ Endpoint de health check único e bem definido
+- ✅ Health check detalhado com informações do sistema
+- ✅ CRUD completo para integradores
+- ✅ Repositório em memória para desenvolvimento ágil
+- ✅ Padrão Repository extensível
+- ✅ Integração com serviços Mottu (autenticação KeyCloak como cliente)
+- ✅ Middleware customizado para autenticação e handlers HTTP
+- ✅ Versionamento de API estruturado (V1 implementada, V2 preparada)
+- ✅ Injeção de dependência configurada
+- ✅ Documentação abrangente com XML summaries
+- ✅ Sistema integrador (consome APIs externas, não expõe autenticação)
 
-### Building the Solution
+## Começando
+
+### Pré-requisitos
+
+- .NET 9.0 SDK ou superior
+- Visual Studio 2022 ou VS Code (opcional)
+
+### Construindo a Solução
 
 ```bash
 dotnet build
 ```
 
-### Running the Application
+### Executando a Aplicação
 
 ```bash
 cd src/MoonOps.Api
 dotnet run
 ```
 
-The API will be available at:
+A API estará disponível em:
 - HTTP: `http://localhost:5000`
 - HTTPS: `https://localhost:5001`
 
-In development mode, you can access:
-- **Scalar UI**: `https://localhost:5001/scalar/v1`
+No modo de desenvolvimento, você pode acessar:
+- **Scalar UI**: `https://localhost:5001/docs`
 - **OpenAPI JSON**: `https://localhost:5001/openapi/v1.json`
 
-### Running Tests
+### Executando Testes
 
 ```bash
 dotnet test
 ```
 
-## API Endpoints
+## Endpoints da API
 
-### Health Check
-- **GET** `/health`
-  - Returns the health status of the API
-  - Response: `{ "status": "Healthy", "timestamp": "2025-11-07T..." }`
+### Health Check (v1)
+- **GET** `/api/v1/health` - Status básico da API
+- **GET** `/api/v1/health/detailed` - Status detalhado com informações do sistema
 
-## Architecture Overview
+### Integradores (v1/integrators)
+- **GET** `/api/v1/integrators` - Lista todos os integradores
+- **GET** `/api/v1/integrators/{id}` - Obtém integrador específico
+- **POST** `/api/v1/integrators` - Cria novo integrador
+- **PUT** `/api/v1/integrators/{id}` - Atualiza integrador existente
+- **DELETE** `/api/v1/integrators/{id}` - Remove integrador
 
-### Domain Layer (`MoonOps.Domain`)
-Contains business entities, value objects, and domain interfaces. This layer has no dependencies on other layers.
-- All entities inherit from `BaseEntity` with audit fields
-- Interfaces define contracts for repositories
-- Example: `Integrator` entity demonstrates domain modeling
+### Discovery e Versionamento (v1/version)
+- **GET** `/api/v1/version` - **Informações completas da V1 com lista de todos os controllers registrados**
+- **GET** `/api/v1/version/controllers` - **Lista simplificada de controllers disponíveis na V1**
 
-### Application Layer (`MoonOps.Application`)
-Orchestrates business logic and coordinates between the domain and infrastructure layers. Contains Models and application services.
-- Models (not DTOs) for data transfer between layers
-- Application services implement business logic orchestration
-- Example: `IntegratorService` demonstrates service implementation
+### Discovery V2 (v2/version) - Exemplo
+- **GET** `/api/v2/version` - Informações da versão 2 (exemplo para futuro)
 
-### Infrastructure Layer (`MoonOps.Infrastructure`)
-Implements interfaces defined in the domain layer. Handles data persistence, external services, and other infrastructure concerns.
-- Base repository implementation ready for database integration
-- Prepared for Entity Framework Core, Dapper, or other ORMs
+## Versionamento Automático
 
-### API Layer (`MoonOps.Api`)
-Exposes HTTP endpoints using minimal APIs. Configures middleware, dependency injection, and hosts the application.
-- Minimal API approach for clean, focused endpoints
-- Scalar UI integration for interactive API documentation
-- OpenAPI specification automatically generated
+### Sistema de Discovery de Versões
+O MoonOps possui **controllers de versionamento** que automaticamente descobrem e listam todos os endpoints registrados em cada versão:
 
-## Code Documentation Standards
+```json
+// GET /api/v1/version - Exemplo de resposta
+{
+  "version": "v1",
+  "apiVersion": "1.0.0",
+  "controllers": {
+    "health": [
+      { "method": "GET", "path": "/api/v1/health" },
+      { "method": "GET", "path": "/api/v1/health/detailed" }
+    ],
+    "integrators": [
+      { "method": "GET", "path": "/api/v1/integrators" },
+  { "method": "POST", "path": "/api/v1/integrators" },
+      { "method": "GET", "path": "/api/v1/integrators/{id}" },
+      { "method": "PUT", "path": "/api/v1/integrators/{id}" },
+      { "method": "DELETE", "path": "/api/v1/integrators/{id}" }
+    ]
+  },
+  "totalControllers": 3,
+  "totalEndpoints": 8,
+  "documentation": "/docs"
+}
+```
 
-All components in this project follow strict documentation standards:
+### Como Criar Novos Controllers
 
-- **XML Summaries**: Every class, method, property, and parameter has detailed XML documentation
-- **Regions**: Code is organized using `#region`/`#endregion` for better navigation
-  - `#region Namespace Imports` - All using statements
-  - `#region Fields` - Private fields
-  - `#region Properties` - Public properties
-  - `#region Constructors` - Constructor methods
-  - `#region Public Methods` - Public methods
-  - `#region Private Methods` - Private/helper methods
-- **Consistent Structure**: All files follow the same organizational pattern
+#### **Para V1:**
+```csharp
+[ApiExplorerSettings(GroupName = "v1/exemplo")]
+public class ExemploController : V1ControllerBase
+{
+    [HttpGet] // Rota automática: api/v1/exemplo
+    public IActionResult Get() => Ok("V1 Example");
+}
+```
 
-## Scalability Considerations
+#### **Para V2:**
+```csharp
+[ApiExplorerSettings(GroupName = "v2")]
+public class ExemploController : V2ControllerBase  
+{
+    [HttpGet] // Rota automática: api/v2/exemplo
+    public IActionResult Get() => Ok("V2 Example");
+}
+```
 
-The architecture is designed for scalability:
+### Estrutura de Versionamento
+- **V1ControllerBase** - Base para V1 com `[Route("api/v1/[controller]")]`
+- **V2ControllerBase** - Base para V2 com `[Route("api/v2/[controller]")]`
+- **VersionController** - Discovery automático de endpoints por versão
 
-1. **Modular Design**: Each layer is a separate project, allowing independent scaling and deployment
-2. **Repository Pattern**: Abstracts data access for easy replacement or multiple implementations
-3. **DDD Principles**: Business logic is isolated in the domain layer
-4. **Dependency Inversion**: High-level modules don't depend on low-level modules
-5. **Central Repository Ready**: Structure supports integration with a central repository for shared integrators and code modules
+## Arquitetura de Integração
 
-## Next Steps
+### MoonOps como Sistema Integrador
+O MoonOps atua como um **sistema integrador**, ou seja:
+- **Consome** APIs de terceiros (como Mottu via KeyCloak)
+- **Não expõe** endpoints de autenticação próprios
+- **Gerencia** tokens automaticamente via `AuthTokenKeeperHandler`
+- **Processa** e transforma dados entre sistemas
+- **Fornece** CRUD para gerenciar integradores cadastrados
+- **Oferece discovery** de versões e endpoints automaticamente
 
-- Add Entity Framework Core for database persistence
-- Implement authentication and authorization
-- Add logging and monitoring
-- Create domain-specific entities and services
-- Integrate with central code repository
-- Add API versioning
-- Implement CQRS pattern if needed
+### Fluxo de Autenticação
+1. `KeyCloakService` obtém tokens dos serviços Mottu
+2. `AuthTokenKeeperHandler` injeta tokens automaticamente nas requisições
+3. Controllers processam dados sem se preocupar com autenticação
 
-## License
+### Persistência Temporária
+- **InMemoryRepository**: Implementação thread-safe para desenvolvimento
+- **Dados em memória**: Perdidos ao reiniciar a aplicação
+- **Substituível**: Será trocado por persistência real (EF Core, etc.)
 
-This project is licensed under the MIT License.
+## Próximos Passos
+
+- Implementar persistência real (Entity Framework Core)
+- Adicionar validação de modelos
+- Implementar testes unitários
+- Configurar logging estruturado
+- Adicionar controllers de negócio na V1
+- Implementar funcionalidades da V2
+- Adicionar autenticação/autorização se necessário
+
+## Autor e Contato
+
+**Desenvolvedor:** mxxnpy  
+**Email:** contato@moonops.dev  
+**Repositório:** https://github.com/mxxnpy/MoonOps
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT.
